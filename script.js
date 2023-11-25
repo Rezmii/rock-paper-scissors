@@ -6,3 +6,6 @@ function getComputerChoice() {
   else computerChoice = "Scissors";
   return computerChoice;
 }
+
+let computerChoice = getComputerChoice();
+console.log(computerChoice);

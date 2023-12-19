@@ -7,10 +7,24 @@ function getComputerChoice() {
   return computerChoice;
 }
 
+let results = {
+  wins: 0,
+  loses: 0,
+  ties: 0,
+};
+const buttons = document.querySelectorAll(".btn");
+
+buttons.forEach((button) => {
+  let userChoice = button.innerHTML;
+  button.addEventListener("click", () => {
+    let computerChoice = getComputerChoice();
+    playRound(userChoice, computerChoice);
+  });
+});
+
 function playRound(userSelection, computerSelection) {
   let result = "";
   userSelection = userSelection.toLowerCase();
-
   if (userSelection === "rock") {
     if (computerSelection === "rock") result = "tie";
     else if (computerSelection === "paper") result = "lose";
@@ -25,38 +39,42 @@ function playRound(userSelection, computerSelection) {
     else result = "tie";
   }
 
-  return result;
+  countResult(result);
+  displayResult(userSelection, computerSelection, result);
 }
 
-function game() {
-  let results = {
-    wins: 0,
-    loses: 0,
-    ties: 0,
-  };
-
-  for (let i = 0; i < 5; i++) {
-    let computerChoice = getComputerChoice();
-    let userChoice = prompt("Choose: ");
-    let result = playRound(userChoice, computerChoice);
-
-    console.log(
-      `You choose ${userChoice.toLowerCase()} and computer choose ${computerChoice}`
-    );
-
-    if (result === "win") {
-      results.wins++;
-      console.log("You won!");
-    } else if (result === "lose") {
-      results.loses++;
-      console.log("You lost!");
-    } else {
-      results.ties++;
-      console.log("It's a tie!");
-    }
+function displayResult(userSelection, computerSelection, result) {
+  const main = document.querySelector("main");
+  let div = document.querySelector("div");
+  if (!div) {
+    div = document.createElement("div");
+    div.style.marginTop = "20px";
+    main.appendChild(div);
   }
+  div.innerHTML = `You choose ${userSelection} and computer choose ${computerSelection}. Result: ${result} <br>Scoreboard: Wins: ${results.wins}, Loses: ${results.loses}, Ties: ${results.ties}`;
 
-  return results;
+  if (results.wins === 5) {
+    div.innerHTML += "<br>You won the whole match!";
+    resetResults();
+  } else if (results.loses === 5) {
+    div.innerHTML += "<br>Computer won the whole match!";
+    resetResults();
+  }
 }
 
-console.log(game());
+function resetResults() {
+  results.wins = 0;
+  results.loses = 0;
+  results.ties = 0;
+}
+
+function countResult(result) {
+  if (result === "win") {
+    results.wins++;
+  } else if (result === "lose") {
+    results.loses++;
+  } else {
+    results.ties++;
+  }
+  console.log(results);
+}
